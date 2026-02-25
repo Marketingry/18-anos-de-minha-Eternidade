@@ -849,7 +849,7 @@ body {
 }
 
 /* ============================================================
-   FADE-IN ANIMATIONS (scroll-triggered via JS)
+   FADE-IN ANIMATIONS — only used on intro
    ============================================================ */
 .fade-in-child {
   opacity: 0;
@@ -862,15 +862,16 @@ body {
   transform: none;
 }
 
+/* section-inner is always visible — JS adds subtle entrance when scrolled */
 .section-inner {
-  opacity: 0;
-  transform: translateY(24px);
+  opacity: 1;
+  transform: none;
   transition: opacity 0.8s ease, transform 0.8s ease;
 }
 
-.section-inner.visible {
-  opacity: 1;
-  transform: none;
+.section-inner.fade-start {
+  opacity: 0;
+  transform: translateY(20px);
 }
 
 /* Intro content always visible */
@@ -878,6 +879,7 @@ body {
   opacity: 1;
   transform: none;
 }
+
 
 /* ============================================================
    LETTER LOCK / COUNTDOWN
