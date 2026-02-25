@@ -1,6 +1,3 @@
-node_modules
-.tmp
-.gemini
-package-lock.json
-*.log
+node_modules/
+dist/
 .env
