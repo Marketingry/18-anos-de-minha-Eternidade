@@ -24,6 +24,9 @@ function checkLetterLock() {
 }
 
 function updateCountdown() {
+    const elDays = document.getElementById('cd-days');
+    if (!elDays) return; // Se não achar o primeiro, a página ainda não carregou os IDs
+
     const now = new Date();
     const diff = UNLOCK_DATE - now;
 
@@ -39,23 +42,25 @@ function updateCountdown() {
 
     const pad = n => String(n).padStart(2, '0');
 
-    const elDays = document.getElementById('cd-days');
     const elHours = document.getElementById('cd-hours');
     const elMins = document.getElementById('cd-mins');
     const elSecs = document.getElementById('cd-secs');
 
-    if (elDays) elDays.textContent = pad(days);
+    elDays.textContent = pad(days);
     if (elHours) elHours.textContent = pad(hours);
     if (elMins) elMins.textContent = pad(minutes);
     if (elSecs) elSecs.textContent = pad(seconds);
 }
 
-// Inicializar countdown
-const isUnlocked = checkLetterLock();
-if (!isUnlocked) {
-    updateCountdown();                        // render imediato
-    setInterval(updateCountdown, 1000);       // atualizar a cada segundo
-}
+// Iniciar quando o DOM estiver pronto
+document.addEventListener('DOMContentLoaded', () => {
+    const isUnlocked = checkLetterLock();
+    if (!isUnlocked) {
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+    }
+});
+
 
 // ================================================
 // START EXPERIENCE — scroll pro vídeo
