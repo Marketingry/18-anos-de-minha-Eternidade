@@ -850,28 +850,19 @@ body {
 
 /* ============================================================
    FADE-IN ANIMATIONS (scroll-triggered via JS)
+   Sections are ALWAYS visible by default. Animation is a bonus.
    ============================================================ */
 .fade-in-child {
-  opacity: 0;
-  transform: translateY(30px);
-  transition: opacity 0.9s ease, transform 0.9s ease;
-}
-
-.fade-in-child.visible {
   opacity: 1;
   transform: none;
 }
 
 .section-inner {
-  opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 0.8s ease, transform 0.8s ease;
-}
-
-.section-inner.visible {
   opacity: 1;
   transform: none;
 }
+
+/* Intro content always visible */
 
 /* Intro content always visible */
 .section-intro .intro-content {
