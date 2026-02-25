@@ -3,14 +3,17 @@
    ================================================ */
 
 // ================================================
-// CARTA BLOQUEADA — Libera em 9 de março às 7h (UTC-3, horário de Brasília)
+// CARTA BLOQUEADA — Libera em 9 de março às 7h (horário de Brasília)
 // ================================================
-const UNLOCK_DATE = new Date('2026-03-09T07:00:00-03:00');
+// Definindo a data de forma robusta
+const UNLOCK_DATE = new Date(2026, 2, 9, 7, 0, 0); // 9 de Março de 2026, 07:00 (mês 2 = Março)
 
 function checkLetterLock() {
     const now = new Date();
     const locked = document.getElementById('letter-locked');
     const revealed = document.getElementById('letter-revealed');
+
+    console.log('Verificando bloqueio da carta...', now >= UNLOCK_DATE ? 'Liberada!' : 'Bloqueada');
 
     if (now >= UNLOCK_DATE) {
         if (locked) locked.style.display = 'none';
@@ -25,7 +28,14 @@ function checkLetterLock() {
 
 function updateCountdown() {
     const elDays = document.getElementById('cd-days');
-    if (!elDays) return; // Se não achar o primeiro, a página ainda não carregou os IDs
+    const elHours = document.getElementById('cd-hours');
+    const elMins = document.getElementById('cd-mins');
+    const elSecs = document.getElementById('cd-secs');
+
+    if (!elDays || !elHours || !elMins || !elSecs) {
+        console.warn('Elementos do countdown não encontrados no DOM.');
+        return;
+    }
 
     const now = new Date();
     const diff = UNLOCK_DATE - now;
@@ -42,24 +52,28 @@ function updateCountdown() {
 
     const pad = n => String(n).padStart(2, '0');
 
-    const elHours = document.getElementById('cd-hours');
-    const elMins = document.getElementById('cd-mins');
-    const elSecs = document.getElementById('cd-secs');
-
     elDays.textContent = pad(days);
-    if (elHours) elHours.textContent = pad(hours);
-    if (elMins) elMins.textContent = pad(minutes);
-    if (elSecs) elSecs.textContent = pad(seconds);
+    elHours.textContent = pad(hours);
+    elMins.textContent = pad(minutes);
+    elSecs.textContent = pad(seconds);
 }
 
-// Iniciar quando o DOM estiver pronto
-document.addEventListener('DOMContentLoaded', () => {
+// Iniciar quando o DOM estiver pronto ou IMEDIATAMENTE se já estiver pronto
+function initCountdown() {
     const isUnlocked = checkLetterLock();
     if (!isUnlocked) {
+        console.log('Iniciando cronômetro para:', UNLOCK_DATE);
         updateCountdown();
         setInterval(updateCountdown, 1000);
     }
-});
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initCountdown);
+} else {
+    initCountdown();
+}
+
 
 
 // ================================================
