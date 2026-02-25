@@ -2,92 +2,32 @@
    ANNA VICTORIA — BIRTHDAY PAGE JAVASCRIPT
    ================================================ */
 
-// Aguarda o DOM estar totalmente carregado antes de qualquer coisa
 document.addEventListener('DOMContentLoaded', function () {
 
-  // ================================================
-  // SPLASH — Countdown até 25/02/2026 00:00:00 (Brasília UTC-3)
-  // ================================================
-
-  // Timestamp exato da meia-noite de Brasília (UTC-3)
-  var BIRTHDAY_TARGET = Date.parse('2026-02-25T00:00:00-03:00');
+  // ===============================================
+  // SPLASH — botão para abrir a surpresa
+  // ===============================================
 
   var splashEl = document.getElementById('birthday-splash');
-  var contentEl = document.getElementById('splash-content');
-  var boomEl = document.getElementById('splash-boom');
-  var spHours = document.getElementById('sp-hours');
-  var spMins = document.getElementById('sp-mins');
-  var spSecs = document.getElementById('sp-secs');
-
-  var boomFired = false;
-  var splashInterval = null;
-
-  function zpad(n) {
-    return n < 10 ? '0' + n : '' + n;
-  }
-
-  function updateSplashCountdown() {
-    var diff = BIRTHDAY_TARGET - Date.now();
-
-    if (diff <= 0) {
-      // Zerar visualmente
-      if (spHours) spHours.textContent = '00';
-      if (spMins) spMins.textContent = '00';
-      if (spSecs) spSecs.textContent = '00';
-
-      clearInterval(splashInterval);
-      fireBoom();
-      return;
-    }
-
-    var h = Math.floor(diff / 3600000);
-    var m = Math.floor((diff % 3600000) / 60000);
-    var s = Math.floor((diff % 60000) / 1000);
-
-    if (spHours) spHours.textContent = zpad(h);
-    if (spMins) spMins.textContent = zpad(m);
-    if (spSecs) spSecs.textContent = zpad(s);
-  }
-
-  function fireBoom() {
-    if (boomFired) return;
-    boomFired = true;
-
-    if (contentEl) contentEl.style.display = 'none';
-    if (boomEl) boomEl.style.display = 'block';
-
-    startConfetti();
-    playCelebrationSound();
-  }
-
-  // Arrancar
-  if (Date.now() >= BIRTHDAY_TARGET) {
-    // Já passou da meia-noite — mostrar boom diretamente
-    if (contentEl) contentEl.style.display = 'none';
-    if (boomEl) boomEl.style.display = 'block';
-    startConfetti();
-  } else {
-    // Ativar countdown
-    document.body.classList.add('splash-active');
-    updateSplashCountdown(); // rodar imediatamente
-    splashInterval = setInterval(updateSplashCountdown, 1000);
-  }
-
-  // ================================================
-  // CONFETTI ENGINE
-  // ================================================
+  var openBtn = document.getElementById('splash-open-btn');
   var confettiCanvas = document.getElementById('confetti-canvas');
   var confettiCtx = confettiCanvas ? confettiCanvas.getContext('2d') : null;
   var confettiPieces = [];
   var confettiRunning = false;
+
+  // Bloquear scroll da página enquanto o splash está visível
+  if (document.body) document.body.classList.add('splash-active');
+
+  // ---- CONFETTI ENGINE ----
+  var COLORS = ['#C23B3B', '#F5E6D3', '#fff', '#e07070', '#f8baba', '#FFD700', '#FF69B4', '#a8f542'];
 
   function resizeCanvas() {
     if (!confettiCanvas) return;
     confettiCanvas.width = window.innerWidth;
     confettiCanvas.height = window.innerHeight;
   }
-
-  var COLORS = ['#C23B3B', '#F5E6D3', '#fff', '#e07070', '#f8baba', '#FFD700', '#FF69B4', '#a8f542'];
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
 
   function newPiece() {
     var w = confettiCanvas ? confettiCanvas.width : window.innerWidth;
@@ -106,16 +46,15 @@ document.addEventListener('DOMContentLoaded', function () {
     };
   }
 
-  function spawnConfetti(count) {
-    resizeCanvas();
-    for (var i = 0; i < count; i++) confettiPieces.push(newPiece());
+  function spawnConfetti(n) {
+    for (var i = 0; i < n; i++) confettiPieces.push(newPiece());
   }
 
   function drawConfetti() {
     if (!confettiCtx || !confettiCanvas) return;
     confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
 
-    var h = confettiCanvas.height;
+    var canvasH = confettiCanvas.height;
     var surviving = [];
 
     for (var i = 0; i < confettiPieces.length; i++) {
@@ -137,84 +76,94 @@ document.addEventListener('DOMContentLoaded', function () {
       p.x += p.dx;
       p.y += p.dy;
       p.tilt += p.dtilt;
-      if (p.y > h * 0.72) p.alpha -= 0.014;
-
+      if (p.y > canvasH * 0.72) p.alpha -= 0.014;
       if (p.alpha > 0) surviving.push(p);
     }
 
     confettiPieces = surviving;
-
-    // Reabastecer enquanto confetti ativo
     if (confettiRunning && confettiPieces.length < 90) spawnConfetti(60);
 
     if (confettiPieces.length > 0) {
       requestAnimationFrame(drawConfetti);
-    } else if (confettiCtx) {
+    } else {
       confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
     }
   }
 
   function startConfetti() {
     confettiRunning = true;
+    resizeCanvas();
     spawnConfetti(220);
     drawConfetti();
-    setTimeout(function () { confettiRunning = false; }, 7000);
+    setTimeout(function () { confettiRunning = false; }, 6000);
   }
 
-  window.addEventListener('resize', resizeCanvas);
-
-  // ================================================
-  // SOM DE CELEBRAÇÃO (Web Audio API)
-  // ================================================
+  // ---- SOM DE CELEBRAÇÃO ----
   function playCelebrationSound() {
     try {
       var ctx = new (window.AudioContext || window.webkitAudioContext)();
       var notes = [523.25, 659.25, 783.99, 1046.5];
-      notes.forEach(function (freq, i) {
-        var osc = ctx.createOscillator();
-        var gain = ctx.createGain();
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.type = 'sine';
-        osc.frequency.value = freq;
-        var t = ctx.currentTime + i * 0.18;
-        gain.gain.setValueAtTime(0, t);
-        gain.gain.linearRampToValueAtTime(0.38, t + 0.05);
-        gain.gain.exponentialRampToValueAtTime(0.001, t + 0.7);
-        osc.start(t);
-        osc.stop(t + 0.8);
-      });
-    } catch (e) { /* navegador bloqueou — silêncio */ }
+      for (var i = 0; i < notes.length; i++) {
+        (function (freq, idx) {
+          var osc = ctx.createOscillator();
+          var gain = ctx.createGain();
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.type = 'sine';
+          osc.frequency.value = freq;
+          var t = ctx.currentTime + idx * 0.18;
+          gain.gain.setValueAtTime(0, t);
+          gain.gain.linearRampToValueAtTime(0.4, t + 0.05);
+          gain.gain.exponentialRampToValueAtTime(0.001, t + 0.7);
+          osc.start(t);
+          osc.stop(t + 0.8);
+        })(notes[i], i);
+      }
+    } catch (e) { /* navegador bloqueou */ }
   }
 
-  // ================================================
-  // ENTRAR NO SITE (botão do boom)
-  // ================================================
-  window.enterSite = function () {
-    confettiRunning = false;
-    if (splashEl) {
-      splashEl.classList.add('hiding');
+  // ---- CLIQUE NO BOTÃO "Abrir minha surpresa" ----
+  if (openBtn) {
+    openBtn.addEventListener('click', function () {
+      // Disparar confetes e som
+      startConfetti();
+      playCelebrationSound();
+
+      // Desabilitar o botão para não repetir
+      openBtn.disabled = true;
+      openBtn.textContent = '🎉 Abrindo…';
+
+      // Aguardar 2.5s de confetes e depois fechar o splash
       setTimeout(function () {
-        splashEl.style.display = 'none';
-        document.body.classList.remove('splash-active');
-      }, 900);
-    }
+        if (splashEl) {
+          splashEl.classList.add('hiding');
+          setTimeout(function () {
+            splashEl.style.display = 'none';
+            document.body.classList.remove('splash-active');
+          }, 900);
+        }
+      }, 2500);
+    });
+  }
+
+  // Expor globalmente por segurança (caso haja onclick no HTML)
+  window.openSurprise = function () {
+    if (openBtn) openBtn.click();
   };
 
-  // ================================================
-  // CARTA BLOQUEADA — Libera em 9 de março às 7h (UTC-3)
-  // ================================================
+  // ===============================================
+  // CARTA BLOQUEADA — 9 de março às 7h (UTC-3)
+  // ===============================================
   var UNLOCK_DATE = Date.parse('2026-03-09T07:00:00-03:00');
+
+  function zpad(n) { return n < 10 ? '0' + n : '' + n; }
 
   function checkLetterLock() {
     var locked = document.getElementById('letter-locked');
     var revealed = document.getElementById('letter-revealed');
     if (Date.now() >= UNLOCK_DATE) {
       if (locked) locked.style.display = 'none';
-      if (revealed) {
-        revealed.style.display = 'flex';
-        initLetterReveal();
-      }
+      if (revealed) { revealed.style.display = 'flex'; initLetterReveal(); }
       return true;
     }
     return false;
@@ -229,15 +178,14 @@ document.addEventListener('DOMContentLoaded', function () {
     var m = Math.floor((diff % 3600000) / 60000);
     var s = Math.floor((diff % 60000) / 1000);
 
-    var elDays = document.getElementById('cd-days');
-    var elHours = document.getElementById('cd-hours');
-    var elMins = document.getElementById('cd-mins');
-    var elSecs = document.getElementById('cd-secs');
-
-    if (elDays) elDays.textContent = zpad(days);
-    if (elHours) elHours.textContent = zpad(h);
-    if (elMins) elMins.textContent = zpad(m);
-    if (elSecs) elSecs.textContent = zpad(s);
+    var elD = document.getElementById('cd-days');
+    var elH = document.getElementById('cd-hours');
+    var elM = document.getElementById('cd-mins');
+    var elS = document.getElementById('cd-secs');
+    if (elD) elD.textContent = zpad(days);
+    if (elH) elH.textContent = zpad(h);
+    if (elM) elM.textContent = zpad(m);
+    if (elS) elS.textContent = zpad(s);
   }
 
   var letterUnlocked = checkLetterLock();
@@ -246,36 +194,34 @@ document.addEventListener('DOMContentLoaded', function () {
     setInterval(updateLetterCountdown, 1000);
   }
 
-  // ================================================
+  // ===============================================
   // SCROLL TO VIDEO
-  // ================================================
+  // ===============================================
   window.startExperience = function () {
     var el = document.getElementById('video');
     if (el) el.scrollIntoView({ behavior: 'smooth' });
   };
 
-  // ================================================
+  // ===============================================
   // CAROUSEL
-  // ================================================
+  // ===============================================
   var currentSlide = 0;
   var isAnimating = false;
   var slides = document.querySelectorAll('.carousel-slide');
   var dots = document.querySelectorAll('.dot');
 
   function goToSlide(index) {
-    if (isAnimating || index === currentSlide) return;
+    if (isAnimating || !slides.length || index === currentSlide) return;
     isAnimating = true;
     var dir = index > currentSlide ? 'right' : 'left';
-
     slides[currentSlide].classList.remove('active');
     slides[currentSlide].classList.add(dir === 'right' ? 'slide-exit-left' : 'slide-exit-right');
     dots[currentSlide].classList.remove('active');
     currentSlide = index;
-
     setTimeout(function () {
       slides.forEach(function (s) { s.classList.remove('slide-exit-left', 'slide-exit-right'); });
       slides[currentSlide].classList.add('active');
-      dots[currentSlide].classList.add('active');
+      if (dots[currentSlide]) dots[currentSlide].classList.add('active');
       isAnimating = false;
     }, 50);
   }
@@ -307,9 +253,9 @@ document.addEventListener('DOMContentLoaded', function () {
   var autoPlay = setInterval(nextSlide, 5500);
   function resetAP() { clearInterval(autoPlay); autoPlay = setInterval(nextSlide, 5500); }
 
-  // ================================================
+  // ===============================================
   // MAP TOOLTIP
-  // ================================================
+  // ===============================================
   var tooltipTimer = null;
   window.showTooltip = function (element, text) {
     var tooltip = document.getElementById('map-tooltip');
@@ -323,23 +269,22 @@ document.addEventListener('DOMContentLoaded', function () {
     tooltipTimer = setTimeout(function () { tooltip.classList.remove('visible'); }, 3200);
   };
 
-  // ================================================
-  // SCROLL FADE-IN (section-inner)
-  // ================================================
-  var secObserver = new IntersectionObserver(function (entries) {
+  // ===============================================
+  // SCROLL FADE-IN
+  // ===============================================
+  var secObs = new IntersectionObserver(function (entries) {
     entries.forEach(function (entry) {
       if (entry.isIntersecting) {
         entry.target.classList.add('visible');
-        secObserver.unobserve(entry.target);
+        secObs.unobserve(entry.target);
       }
     });
   }, { threshold: 0.15 });
+  document.querySelectorAll('.section-inner').forEach(function (el) { secObs.observe(el); });
 
-  document.querySelectorAll('.section-inner').forEach(function (el) { secObserver.observe(el); });
-
-  // ================================================
+  // ===============================================
   // INTRO FADE IN
-  // ================================================
+  // ===============================================
   var intro = document.querySelector('.intro-content');
   if (intro) {
     intro.style.opacity = '0';
@@ -353,9 +298,9 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  // ================================================
-  // LETTER REVEAL (blocos da carta)
-  // ================================================
+  // ===============================================
+  // LETTER REVEAL
+  // ===============================================
   function initLetterReveal() {
     var blocks = document.querySelectorAll('.letter-block-hidden');
     var obs = new IntersectionObserver(function (entries) {
@@ -374,13 +319,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
   if (letterUnlocked) initLetterReveal();
 
-  // ================================================
-  // FLOATING NAV — hide na hero
-  // ================================================
+  // ===============================================
+  // FLOATING NAV
+  // ===============================================
   var floatingNav = document.getElementById('floating-nav');
   var introSection = document.getElementById('intro');
-
-  var navObserver = new IntersectionObserver(function (entries) {
+  var navObs = new IntersectionObserver(function (entries) {
     entries.forEach(function (entry) {
       if (floatingNav) {
         floatingNav.style.opacity = entry.isIntersecting ? '0' : '1';
@@ -389,10 +333,8 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     });
   }, { threshold: 0.5 });
+  if (introSection) navObs.observe(introSection);
 
-  if (introSection) navObserver.observe(introSection);
+  console.log('💕 Feito com muito amor pelo Ryan para Anna Victoria.');
 
-  console.log('💕 Olá Anna Victoria! Feito com muito amor pelo Ryan. Faltam: ' +
-    Math.max(0, Math.floor((BIRTHDAY_TARGET - Date.now()) / 1000)) + ' segundo(s).');
-
-}); // fim do DOMContentLoaded
+}); // fim DOMContentLoaded

@@ -19,46 +19,23 @@
 
 <body>
 
-  <!-- ========== BIRTHDAY COUNTDOWN SPLASH ========== -->
+  <!-- ========== BIRTHDAY SPLASH ========== -->
   <div id="birthday-splash">
-    <!-- Confetti canvas (renderizado por JS) -->
+    <!-- Confetti canvas -->
     <canvas id="confetti-canvas"></canvas>
 
-    <!-- Conteúdo da tela de espera -->
+    <!-- Tela principal -->
     <div id="splash-content">
       <div class="splash-rose">🌹</div>
       <p class="splash-label">✦ feliz aniversário, Anna Victoria ✦</p>
-      <h1 class="splash-title">Sua surpresa<br /><em>está chegando…</em></h1>
-      <p class="splash-sub">A página abre quando der meia-noite 💕</p>
+      <h1 class="splash-title">Tenho uma surpresa<br /><em>especial para você</em></h1>
+      <p class="splash-sub">Feita com muito amor, só para você. 💕</p>
 
-      <div class="splash-countdown">
-        <div class="splash-cd-item">
-          <span id="sp-hours">00</span>
-          <small>horas</small>
-        </div>
-        <div class="splash-cd-sep">:</div>
-        <div class="splash-cd-item">
-          <span id="sp-mins">00</span>
-          <small>min</small>
-        </div>
-        <div class="splash-cd-sep">:</div>
-        <div class="splash-cd-item">
-          <span id="sp-secs">00</span>
-          <small>seg</small>
-        </div>
-      </div>
-
-      <p class="splash-date">25 de Fevereiro de 2026 — 00h00</p>
-    </div>
-
-    <!-- Tela de zero (aparece quando bate meia-noite) -->
-    <div id="splash-boom" style="display:none;">
-      <div class="boom-emoji">🎉</div>
-      <h1 class="boom-title">Feliz Aniversário,<br /><em>Anna Victoria!</em></h1>
-      <p class="boom-sub">Hoje você completa 18 anos<br />e eu completei mais um aninho te amando. 💕</p>
-      <button id="splash-enter-btn" class="boom-btn" onclick="enterSite()">
-        Entrar na sua surpresa ❤
+      <button id="splash-open-btn" onclick="openSurprise()">
+        🎉 Abrir minha surpresa
       </button>
+
+      <p class="splash-hint">clique para descobrir ✨</p>
     </div>
   </div>
 
