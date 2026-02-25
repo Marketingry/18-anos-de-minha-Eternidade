@@ -5,7 +5,7 @@
 // ================================================
 // SPLASH — Countdown até 25/02/2026 00:00:00 (UTC-3)
 // ================================================
-const BIRTHDAY_MIDNIGHT = new Date('2026-02-25T00:00:00-03:00');
+const BIRTHDAY_MIDNIGHT = new Date('2026-02-25T00:00:00-03:00').getTime();
 
 // ---- Confetti engine (canvas puro, sem library) ----
 const confettiCanvas = document.getElementById('confetti-canvas');
@@ -145,11 +145,11 @@ function fireBoom() {
 }
 
 function updateSplashCountdown() {
-  const now = new Date();
+  const now = Date.now();
   const diff = BIRTHDAY_MIDNIGHT - now;
 
   if (diff <= 0) {
-    clearInterval(splashInterval);
+    if (splashInterval) clearInterval(splashInterval);
     // Zerar o contador visualmente
     if (spHours) spHours.textContent = '00';
     if (spMins) spMins.textContent = '00';
@@ -168,8 +168,8 @@ function updateSplashCountdown() {
 }
 
 // Verificar se já passou da meia-noite ao carregar
-const now = new Date();
-if (now >= BIRTHDAY_MIDNIGHT) {
+const initNow = Date.now();
+if (initNow >= BIRTHDAY_MIDNIGHT) {
   // Já passou — mostrar tela boom direto
   if (contentEl) contentEl.style.display = 'none';
   if (boomEl) boomEl.style.display = 'block';
