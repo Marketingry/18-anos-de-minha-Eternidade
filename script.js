@@ -1,88 +1,17 @@
 /* ================================================
    ANNA VICTORIA — BIRTHDAY PAGE JAVASCRIPT
    ================================================ */
-
-// ================================================
-// CARTA BLOQUEADA — Libera em 9 de março às 7h (horário de Brasília)
-// ================================================
-// Definindo a data de forma robusta
-const UNLOCK_DATE = new Date(2026, 2, 9, 7, 0, 0); // 9 de Março de 2026, 07:00 (mês 2 = Março)
-
-function checkLetterLock() {
-    const now = new Date();
-    const locked = document.getElementById('letter-locked');
-    const revealed = document.getElementById('letter-revealed');
-
-    console.log('Verificando bloqueio da carta...', now >= UNLOCK_DATE ? 'Liberada!' : 'Bloqueada');
-
-    if (now >= UNLOCK_DATE) {
-        if (locked) locked.style.display = 'none';
-        if (revealed) {
-            revealed.style.display = 'flex';
-            initLetterReveal();
-        }
-        return true;
-    }
-    return false;
-}
-
-function updateCountdown() {
-    const elDays = document.getElementById('cd-days');
-    const elHours = document.getElementById('cd-hours');
-    const elMins = document.getElementById('cd-mins');
-    const elSecs = document.getElementById('cd-secs');
-
-    if (!elDays || !elHours || !elMins || !elSecs) {
-        console.warn('Elementos do countdown não encontrados no DOM.');
-        return;
-    }
-
-    const now = new Date();
-    const diff = UNLOCK_DATE - now;
-
-    if (diff <= 0) {
-        checkLetterLock();
-        return;
-    }
-
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-    const pad = n => String(n).padStart(2, '0');
-
-    elDays.textContent = pad(days);
-    elHours.textContent = pad(hours);
-    elMins.textContent = pad(minutes);
-    elSecs.textContent = pad(seconds);
-}
-
-// Iniciar quando o DOM estiver pronto ou IMEDIATAMENTE se já estiver pronto
-function initCountdown() {
-    const isUnlocked = checkLetterLock();
-    if (!isUnlocked) {
-        console.log('Iniciando cronômetro para:', UNLOCK_DATE);
-        updateCountdown();
-        setInterval(updateCountdown, 1000);
-    }
-}
-
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initCountdown);
-} else {
-    initCountdown();
-}
-
-
+// Nota: o countdown da carta está embutido inline no index.html
 
 // ================================================
 // START EXPERIENCE — scroll pro vídeo
 // ================================================
 function startExperience() {
-    const target = document.getElementById('video');
+    var target = document.getElementById('video');
     if (target) target.scrollIntoView({ behavior: 'smooth' });
 }
+
+
 
 // ================================================
 // CAROUSEL

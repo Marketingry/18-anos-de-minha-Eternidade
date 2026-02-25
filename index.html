@@ -158,7 +158,7 @@
       <div class="section-label">— capítulo três —</div>
       <h2 class="section-title">Uma carta<br /><em>do meu coração</em></h2>
 
-      <!-- ====== CARTA BLOQUEADA (exibida antes do dia 9/03 às 7h) ====== -->
+      <!-- ====== CARTA BLOQUEADA ====== -->
       <div id="letter-locked" class="letter-locked-box">
         <div class="lock-icon">🔒</div>
         <p class="lock-title">Esta carta está esperando por você</p>
@@ -174,6 +174,45 @@
         </div>
         <p class="lock-hint">9 de março, 7h00 ✉️</p>
       </div>
+
+      <!-- SCRIPT INLINE — nunca depende de arquivo externo -->
+      <script>
+        (function () {
+          // 9 de Março de 2026, 07:00 horário local do visitante
+          // Deixamos sem fuso fixo para funcionar em qualquer país
+          var unlock = new Date(2026, 2, 9, 7, 0, 0); // mês 2 = março (0-indexed)
+
+          function pad(n) { return n < 10 ? '0' + n : '' + n; }
+
+          function tick() {
+            var now = new Date();
+            var diff = unlock - now;
+
+            if (diff <= 0) {
+              // Hora de abrir a carta!
+              var locked = document.getElementById('letter-locked');
+              var revealed = document.getElementById('letter-revealed');
+              if (locked) locked.style.display = 'none';
+              if (revealed) revealed.style.display = 'block';
+              clearInterval(timer);
+              return;
+            }
+
+            var days = Math.floor(diff / 86400000);
+            var hours = Math.floor((diff % 86400000) / 3600000);
+            var mins = Math.floor((diff % 3600000) / 60000);
+            var secs = Math.floor((diff % 60000) / 1000);
+
+            document.getElementById('cd-days').textContent = pad(days);
+            document.getElementById('cd-hours').textContent = pad(hours);
+            document.getElementById('cd-mins').textContent = pad(mins);
+            document.getElementById('cd-secs').textContent = pad(secs);
+          }
+
+          tick(); // rodar imediatamente
+          var timer = setInterval(tick, 1000);
+        })();
+      </script>
 
       <!-- ====== CARTA REAL (oculta até 9/03 às 7h) ====== -->
       <div id="letter-revealed" class="letter-wrapper" style="display:none;">
