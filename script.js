@@ -98,6 +98,7 @@ dots.forEach(dot => {
     dot.addEventListener('click', () => { goToSlide(parseInt(dot.dataset.index, 10)); resetAutoPlay(); });
 });
 
+// Touch / swipe
 let touchStartX = 0;
 const carouselTrack = document.getElementById('carousel-track');
 if (carouselTrack) {
@@ -129,34 +130,7 @@ function showTooltip(element, text) {
 }
 
 // ================================================
-// SCROLL FADE-IN
-// ================================================
-const sectionObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.classList.add('visible');
-            sectionObserver.unobserve(entry.target);
-        }
-    });
-}, { threshold: 0.15 });
-
-document.querySelectorAll('.section-inner').forEach(el => sectionObserver.observe(el));
-
-window.addEventListener('load', () => {
-    const intro = document.querySelector('.intro-content');
-    if (intro) {
-        intro.style.opacity = '0';
-        intro.style.transform = 'translateY(28px)';
-        intro.style.transition = 'opacity 1.1s ease, transform 1.1s ease';
-        requestAnimationFrame(() => requestAnimationFrame(() => {
-            intro.style.opacity = '1';
-            intro.style.transform = 'none';
-        }));
-    }
-});
-
-// ================================================
-// LETTER BLOCKS REVEAL
+// LETTER BLOCKS REVEAL (ao rolar)
 // ================================================
 function initLetterReveal() {
     const letterBlocks = document.querySelectorAll('.letter-block-hidden');
@@ -170,28 +144,27 @@ function initLetterReveal() {
                 letterObserver.unobserve(entry.target);
             }
         });
-    }, { threshold: 0.2 });
+    }, { threshold: 0.15 });
     letterBlocks.forEach(block => letterObserver.observe(block));
 }
 
 if (isUnlocked) initLetterReveal();
 
 // ================================================
-// FLOATING NAV
+// FLOATING NAV — ocultar na hero section
 // ================================================
 const floatingNav = document.getElementById('floating-nav');
 const introSection = document.getElementById('intro');
 
-const navObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (floatingNav) {
+if (floatingNav && introSection) {
+    const navObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
             floatingNav.style.opacity = entry.isIntersecting ? '0' : '1';
             floatingNav.style.pointerEvents = entry.isIntersecting ? 'none' : 'auto';
             floatingNav.style.transition = 'opacity 0.4s';
-        }
-    });
-}, { threshold: 0.5 });
-
-if (introSection) navObserver.observe(introSection);
+        });
+    }, { threshold: 0.4 });
+    navObserver.observe(introSection);
+}
 
 console.log('💕 Olá Anna Victoria! Este site foi feito com muito amor pelo Ryan.');
