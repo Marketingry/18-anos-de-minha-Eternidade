@@ -861,16 +861,6 @@ body {
   transform: none;
 }
 
-.section-inner {
-  opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 0.8s ease, transform 0.8s ease;
-}
-
-.section-inner.visible {
-  opacity: 1;
-  transform: none;
-}
 
 /* Intro content always visible */
 .section-intro .intro-content {

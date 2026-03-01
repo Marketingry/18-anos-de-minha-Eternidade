@@ -117,26 +117,6 @@ function showTooltip(element, text) {
     }, 3000);
 }
 
-// ================================================
-// SCROLL-BASED ANIMATIONS
-// ================================================
-const observerOptions = {
-    root: null,
-    rootMargin: '0px',
-    threshold: 0.18
-};
-
-// Fade in section-inner blocks
-const sectionObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.classList.add('visible');
-            sectionObserver.unobserve(entry.target);
-        }
-    });
-}, observerOptions);
-
-document.querySelectorAll('.section-inner').forEach(el => sectionObserver.observe(el));
 
 // Fade in intro content on load
 window.addEventListener('load', () => {
