@@ -14,58 +14,29 @@ function startExperience() {
 // CAROUSEL
 // ================================================
 let currentSlide = 0;
-let isAnimating = false;
 const slides = document.querySelectorAll('.carousel-slide');
 const dots = document.querySelectorAll('.dot');
 
 function goToSlide(index) {
-    if (isAnimating || index === currentSlide) return;
-    isAnimating = true;
+    if (index === currentSlide || index < 0 || index >= slides.length) return;
 
-    const direction = index > currentSlide ? 'right' : 'left';
-
-    // Exit current
     slides[currentSlide].classList.remove('active');
-    slides[currentSlide].classList.add(direction === 'right' ? 'slide-exit-left' : 'slide-exit-right');
     dots[currentSlide].classList.remove('active');
 
     currentSlide = index;
 
-    // Prepare new slide entry position (opposite direction)
-    slides[currentSlide].style.transform = direction === 'right' ? 'scale(0.9) translateX(40px)' : 'scale(0.9) translateX(-40px)';
-
-    setTimeout(() => {
-        // Remove all exit classes
-        slides.forEach(s => {
-            s.classList.remove('slide-exit-left', 'slide-exit-right');
-        });
-        slides[currentSlide].style.transform = '';
-        slides[currentSlide].classList.add('active');
-        dots[currentSlide].classList.add('active');
-        isAnimating = false;
-    }, 50);
+    slides[currentSlide].classList.add('active');
+    dots[currentSlide].classList.add('active');
 }
 
-function nextSlide() {
-    const next = (currentSlide + 1) % slides.length;
-    goToSlide(next);
-}
+function nextSlide() { goToSlide((currentSlide + 1) % slides.length); }
+function prevSlide() { goToSlide((currentSlide - 1 + slides.length) % slides.length); }
 
-function prevSlide() {
-    const prev = (currentSlide - 1 + slides.length) % slides.length;
-    goToSlide(prev);
-}
-
-// Button events
 document.getElementById('next-btn')?.addEventListener('click', nextSlide);
 document.getElementById('prev-btn')?.addEventListener('click', prevSlide);
 
-// Dot events
 dots.forEach(dot => {
-    dot.addEventListener('click', () => {
-        const index = parseInt(dot.dataset.index, 10);
-        goToSlide(index);
-    });
+    dot.addEventListener('click', () => goToSlide(parseInt(dot.dataset.index, 10)));
 });
 
 // Touch / swipe support
@@ -75,23 +46,16 @@ if (carouselTrack) {
     carouselTrack.addEventListener('touchstart', e => {
         touchStartX = e.changedTouches[0].screenX;
     }, { passive: true });
-
     carouselTrack.addEventListener('touchend', e => {
         const dx = e.changedTouches[0].screenX - touchStartX;
-        if (Math.abs(dx) > 40) {
-            dx < 0 ? nextSlide() : prevSlide();
-        }
+        if (Math.abs(dx) > 40) dx < 0 ? nextSlide() : prevSlide();
     }, { passive: true });
 }
 
-// Auto-advance carousel
+// Auto-advance
 let autoPlay = setInterval(nextSlide, 5500);
-function resetAutoPlay() {
-    clearInterval(autoPlay);
-    autoPlay = setInterval(nextSlide, 5500);
-}
-document.getElementById('next-btn')?.addEventListener('click', resetAutoPlay);
-document.getElementById('prev-btn')?.addEventListener('click', resetAutoPlay);
+document.getElementById('next-btn')?.addEventListener('click', () => { clearInterval(autoPlay); autoPlay = setInterval(nextSlide, 5500); });
+document.getElementById('prev-btn')?.addEventListener('click', () => { clearInterval(autoPlay); autoPlay = setInterval(nextSlide, 5500); });
 
 // ================================================
 // MAP TOOLTIP

@@ -363,17 +363,18 @@ body {
 
 .video-wrapper {
   width: 100%;
-  max-width: 620px;
+  max-width: 360px;
   margin: 0 auto 36px;
   position: relative;
 }
 
 .video-wrapper iframe {
   width: 100%;
-  aspect-ratio: 16/9;
+  aspect-ratio: 9/16;
   border-radius: 12px;
   box-shadow: 0 8px 32px rgba(60, 20, 10, 0.15);
   border: 3px solid var(--beige-dark);
+  display: block;
 }
 
 .video-placeholder {
@@ -471,43 +472,33 @@ body {
   justify-content: center;
   gap: 16px;
   margin-bottom: 24px;
-  min-height: 360px;
 }
 
 .carousel-track {
-  position: relative;
   width: 100%;
   max-width: 340px;
-  aspect-ratio: auto;
-  overflow: visible;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  overflow: hidden;
 }
 
 .carousel-slide {
-  position: absolute;
-  opacity: 0;
-  transform: scale(0.9) translateX(40px);
-  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-  pointer-events: none;
+  display: none;
+  animation: fadeSlide 0.45s ease;
 }
 
 .carousel-slide.active {
-  opacity: 1;
-  transform: scale(1) translateX(0);
-  position: relative;
-  pointer-events: auto;
+  display: block;
 }
 
-.carousel-slide.slide-exit-left {
-  opacity: 0;
-  transform: scale(0.88) translateX(-50px);
-}
+@keyframes fadeSlide {
+  from {
+    opacity: 0;
+    transform: translateX(24px);
+  }
 
-.carousel-slide.slide-exit-right {
-  opacity: 0;
-  transform: scale(0.88) translateX(50px);
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 .carousel-btn {
@@ -626,16 +617,8 @@ body {
   transition: opacity 0.7s ease, transform 0.7s ease;
 }
 
-.letter-block-visible {
-  opacity: 1;
-  transform: none;
-}
-
-.letter-block-hidden {
-  opacity: 0;
-  transform: translateY(20px);
-}
-
+.letter-block-visible,
+.letter-block-hidden,
 .letter-block-revealed {
   opacity: 1;
   transform: none;
