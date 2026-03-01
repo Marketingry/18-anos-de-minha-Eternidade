@@ -363,15 +363,14 @@ body {
 
 .video-wrapper {
   width: 100%;
-  max-width: 320px;
-  /* Reduced max-width for vertical 9:16 video */
+  max-width: 620px;
   margin: 0 auto 36px;
   position: relative;
 }
 
 .video-wrapper iframe {
   width: 100%;
-  aspect-ratio: 9/16;
+  aspect-ratio: 16/9;
   border-radius: 12px;
   box-shadow: 0 8px 32px rgba(60, 20, 10, 0.15);
   border: 3px solid var(--beige-dark);
@@ -379,7 +378,7 @@ body {
 
 .video-placeholder {
   width: 100%;
-  aspect-ratio: 9/16;
+  aspect-ratio: 16/9;
   background: var(--beige-mid);
   border: 2px dashed var(--beige-dark);
   border-radius: 12px;
@@ -849,148 +848,34 @@ body {
 }
 
 /* ============================================================
-   FADE-IN ANIMATIONS
-   Sections are always visible. No opacity:0 dependency on JS.
+   FADE-IN ANIMATIONS (scroll-triggered via JS)
    ============================================================ */
 .fade-in-child {
-  animation: fadeInUp 1s ease both;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.9s ease, transform 0.9s ease;
 }
 
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(28px);
-  }
-
-  to {
-    opacity: 1;
-    transform: none;
-  }
+.fade-in-child.visible {
+  opacity: 1;
+  transform: none;
 }
 
-/* section-inner: always visible, no JS required */
+.section-inner {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
 
-/* Intro content animation */
+.section-inner.visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Intro content always visible */
 .section-intro .intro-content {
-  animation: fadeInUp 1.1s ease 0.1s both;
-}
-
-
-/* ============================================================
-   LETTER LOCK / COUNTDOWN
-   ============================================================ */
-.letter-locked-box {
-  max-width: 520px;
-  margin: 0 auto;
-  background: #fff;
-  border: 2px dashed var(--beige-dark);
-  border-radius: 20px;
-  padding: 48px 36px;
-  text-align: center;
-  box-shadow: 0 4px 24px rgba(60, 20, 10, 0.08);
-  position: relative;
-  overflow: hidden;
-}
-
-.letter-locked-box::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image: repeating-linear-gradient(transparent,
-      transparent 31px,
-      #ebd5b820 31px,
-      #ebd5b820 32px);
-  pointer-events: none;
-}
-
-.lock-icon {
-  font-size: 3.5rem;
-  margin-bottom: 20px;
-  animation: lockWiggle 3s ease-in-out infinite;
-}
-
-@keyframes lockWiggle {
-
-  0%,
-  90%,
-  100% {
-    transform: rotate(0deg);
-  }
-
-  93% {
-    transform: rotate(-8deg);
-  }
-
-  97% {
-    transform: rotate(8deg);
-  }
-}
-
-.lock-title {
-  font-family: var(--font-title);
-  font-size: 1.5rem;
-  color: var(--red-dark);
-  font-weight: 700;
-  margin-bottom: 10px;
-}
-
-.lock-desc {
-  font-family: var(--font-script);
-  font-size: 1.1rem;
-  color: var(--text-soft);
-  margin-bottom: 32px;
-  line-height: 1.6;
-}
-
-.countdown-wrapper {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  margin-bottom: 20px;
-}
-
-.countdown-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background: var(--cream);
-  border: 1.5px solid var(--beige-dark);
-  border-radius: 10px;
-  padding: 10px 14px;
-  min-width: 60px;
-}
-
-.countdown-item span {
-  font-family: var(--font-display);
-  font-size: 2rem;
-  color: var(--red);
-  line-height: 1;
-}
-
-.countdown-item small {
-  font-family: var(--font-body);
-  font-size: 0.65rem;
-  color: var(--text-soft);
-  margin-top: 4px;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-}
-
-.countdown-sep {
-  font-family: var(--font-display);
-  font-size: 1.6rem;
-  color: var(--red);
-  align-self: flex-start;
-  margin-top: 10px;
-  opacity: 0.5;
-}
-
-.lock-hint {
-  font-family: var(--font-script);
-  font-size: 1rem;
-  color: var(--brown-light);
-  opacity: 0.75;
+  opacity: 1;
+  transform: none;
 }
 
 /* ============================================================
