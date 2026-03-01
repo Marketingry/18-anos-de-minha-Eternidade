@@ -849,35 +849,32 @@ body {
 }
 
 /* ============================================================
-   FADE-IN ANIMATIONS (scroll-triggered via JS)
+   FADE-IN ANIMATIONS
+   Sections are always visible. No opacity:0 dependency on JS.
    ============================================================ */
 .fade-in-child {
-  opacity: 0;
-  transform: translateY(30px);
-  transition: opacity 0.9s ease, transform 0.9s ease;
+  animation: fadeInUp 1s ease both;
 }
 
-.fade-in-child.visible {
-  opacity: 1;
-  transform: none;
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
-.section-inner {
-  opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 0.8s ease, transform 0.8s ease;
-}
+/* section-inner: always visible, no JS required */
 
-.section-inner.visible {
-  opacity: 1;
-  transform: none;
-}
-
-/* Intro content always visible */
+/* Intro content animation */
 .section-intro .intro-content {
-  opacity: 1;
-  transform: none;
+  animation: fadeInUp 1.1s ease 0.1s both;
 }
+
 
 /* ============================================================
    LETTER LOCK / COUNTDOWN
