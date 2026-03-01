@@ -158,19 +158,24 @@
       <div class="section-label">— capítulo três —</div>
       <h2 class="section-title">Uma carta<br /><em>do meu coração</em></h2>
 
-      <!-- ====== ENVELOPE CARD ====== -->
-      <div id="envelope-card" class="envelope-card" onclick="openLetter()" title="Clique para abrir a carta">
-        <div class="envelope-body">
-          <div class="envelope-flap"></div>
-          <div class="envelope-front">
-            <div class="envelope-seal">💌</div>
-            <p class="envelope-hint">Toque para abrir</p>
-          </div>
+      <!-- ====== CARTA BLOQUEADA (exibida antes do dia 9/03 às 7h) ====== -->
+      <div id="letter-locked" class="letter-locked-box">
+        <div class="lock-icon">🔒</div>
+        <p class="lock-title">Esta carta está esperando por você</p>
+        <p class="lock-desc">Ela vai abrir no dia da sua primeira aula na faculdade de Direito.</p>
+        <div class="countdown-wrapper">
+          <div class="countdown-item"><span id="cd-days">--</span><small>dias</small></div>
+          <div class="countdown-sep">:</div>
+          <div class="countdown-item"><span id="cd-hours">--</span><small>horas</small></div>
+          <div class="countdown-sep">:</div>
+          <div class="countdown-item"><span id="cd-mins">--</span><small>min</small></div>
+          <div class="countdown-sep">:</div>
+          <div class="countdown-item"><span id="cd-secs">--</span><small>seg</small></div>
         </div>
-        <p class="envelope-label">Uma carta do meu coração para você ✉️</p>
+        <p class="lock-hint">9 de março, 7h00 ✉️</p>
       </div>
 
-      <!-- ====== CARTA REAL ====== -->
+      <!-- ====== CARTA REAL (oculta até 9/03 às 7h) ====== -->
       <div id="letter-revealed" class="letter-wrapper" style="display:none;">
         <div class="letter-paper">
           <div class="letter-date">9 de Março, 2026</div>
@@ -347,7 +352,7 @@
     <a href="#mapa" class="fnav-btn" title="Nosso Mundo">🗺</a>
   </nav>
 
-  <script src="script.js?v=3"></script>
+  <script src="script.js"></script>
 </body>
 
 </html>
